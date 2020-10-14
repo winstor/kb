@@ -1,0 +1,5 @@
+.DS_Store
+.project
+
+vendor
+node_modules
