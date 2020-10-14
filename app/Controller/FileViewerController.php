@@ -147,6 +147,9 @@ class FileViewerController extends BaseController
     {
         try {
             $file = $this->getFile();
+            //写入日志start
+            $this->upDownloadLogModel->downloadLog($this->getUser(),$this->getTask(),$file);
+            //写入日志end
             $this->response->withFileDownload($file['name']);
             $this->response->send();
             $this->objectStorage->output($file['path']);
