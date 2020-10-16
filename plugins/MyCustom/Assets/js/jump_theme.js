@@ -12,7 +12,7 @@ $(document).ready(function () {
                         $(this).animate({width: "97%"}, 50000);
                     });
                 });
-            },500)
+            },200)
         }
     });
 
