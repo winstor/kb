@@ -7,10 +7,12 @@ $(document).ready(function () {
                 clearTimeout(jump_load_out);
                 $("#jump_load").remove();
                 $('body').append('<div id="modal-blurpic" style="backdrop-filter: blur(0);background: rgba(0, 0, 0, 0);"></div><div id="jump_load" style="height: 4px;width: 0;background: green;position: absolute;top:75px;z-index:99999"></div>');
-                $("#jump_load").animate({width: "50%"}, 1000, function () {
-                    $(this).animate({width: "100%"}, 20000);
+                $("#jump_load").animate({width: "70%"}, 500, function () {
+                    $(this).animate({width: "90%"}, 50000, function () {
+                        $(this).animate({width: "97%"}, 40000);
+                    });
                 });
-            },1000)
+            },500)
         }
     });
 
