@@ -71,7 +71,7 @@
 
             <?= $this->hook->render('template:board:private:task:before-title', array('task' => $task)) ?>
 
-            <div class="task-board-title">
+            <div class="task-board-title tooltip" data-href="/?controller=BoardTooltipController&action=description&task_id=<?= $task['id'] ?>&project_id=<?= $task['project_id'] ?>">
                 <?= $this->url->link($this->text->e($task['title']), 'TaskViewController', 'show', array('task_id' => $task['id'], 'project_id' => $task['project_id']),false,'','',true) ?>
             </div>
             <?= $this->hook->render('template:board:private:task:after-title', array('task' => $task)) ?>

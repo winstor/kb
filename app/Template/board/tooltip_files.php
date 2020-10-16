@@ -6,6 +6,7 @@
                 <i class="fa <?= $this->file->icon($file['name']) ?> fa-fw"></i>
                 <?= $this->text->e($file['name']) ?>
             </th>
+            <th>创建者: <?= $task['creator_username'] ?></th>
         </tr>
         <tr>
             <td>
@@ -18,6 +19,7 @@
                         <?= $this->url->link(t('View file'), 'FileViewerController', 'browser', array('task_id' => $task['id'], 'project_id' => $task['project_id'], 'file_id' => $file['id']), false, '', '', true) ?>
                 <?php endif ?>
             </td>
+            <td>日期: <?= date('Y-m-d',$file['date']) ?></td>
         </tr>
         <?php endforeach ?>
     </table>
