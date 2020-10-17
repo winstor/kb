@@ -80,6 +80,18 @@
                                 <li>
                                     <?= $this->url->icon('sort-alpha-desc', t('Reorder this column by assignee (Z-A)'), 'TaskReorderController', 'reorderColumn', ['sort' => 'assignee', 'direction' => 'desc', 'project_id' => $column['project_id'], 'column_id' => $column['id'], 'swimlane_id' => $swimlane['id']]) ?>
                                 </li>
+                                <li>
+                                    <?= $this->url->icon('sort-numeric-desc', t('按任务存在天数从短到长重排'), 'TaskReorderController', 'reorderColumn', ['sort' => 'date_creation', 'direction' => 'desc', 'project_id' => $column['project_id'], 'column_id' => $column['id'], 'swimlane_id' => $swimlane['id']]) ?>
+                                </li>
+                                <li>
+                                    <?= $this->url->icon('sort-numeric-asc', t('按任务存在天数从长到短重排'), 'TaskReorderController', 'reorderColumn', ['sort' => 'date_creation', 'direction' => 'asc', 'project_id' => $column['project_id'], 'column_id' => $column['id'], 'swimlane_id' => $swimlane['id']]) ?>
+                                </li>
+                                <li>
+                                    <?= $this->url->icon('sort-numeric-desc', t('按在此栏目天数从短到长重排'), 'TaskReorderController', 'reorderColumn', ['sort' => 'date_moved', 'direction' => 'desc', 'project_id' => $column['project_id'], 'column_id' => $column['id'], 'swimlane_id' => $swimlane['id']]) ?>
+                                </li>
+                                <li>
+                                    <?= $this->url->icon('sort-numeric-asc', t('按在此栏目天数从长到短重排'), 'TaskReorderController', 'reorderColumn', ['sort' => 'date_moved', 'direction' => 'asc', 'project_id' => $column['project_id'], 'column_id' => $column['id'], 'swimlane_id' => $swimlane['id']]) ?>
+                                </li>
                             <?php endif ?>
 
                             <?= $this->hook->render('template:board:column:dropdown', array('swimlane' => $swimlane, 'column' => $column)) ?>

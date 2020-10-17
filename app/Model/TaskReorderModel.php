@@ -78,6 +78,24 @@ class TaskReorderModel extends Base
         $this->db->closeTransaction();
     }
 
+    //任务基础属性排序
+    public function reorderByColumn($projectID, $swimlaneID, $columnID, $sort, $direction)
+    {
+        $this->db->startTransaction();
+
+        $taskIDs = $this->db->table(TaskModel::TABLE)
+            ->eq('project_id', $projectID)
+            ->eq('swimlane_id', $swimlaneID)
+            ->eq('column_id', $columnID)
+            ->orderBy($sort, $direction)
+            ->asc('id')
+            ->findAllByColumn('id');
+
+        $this->reorderTasks($taskIDs);
+
+        $this->db->closeTransaction();
+    }
+
     protected function reorderTasks(array $taskIDs)
     {
         $i = 1;

@@ -32,6 +32,10 @@ class TaskReorderController extends BaseController
             case 'due-date':
                 $this->taskReorderModel->reorderByDueDate($project['id'], $swimlaneID, $columnID, $direction);
                 break;
+            case 'date_creation':
+            case 'date_moved':
+                $this->taskReorderModel->reorderByColumn($project['id'], $swimlaneID, $columnID, $sort, $direction);
+                break;
         }
 
         $this->response->redirect($this->helper->url->to('BoardViewController', 'show', ['project_id' => $project['id']]));
