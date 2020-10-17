@@ -60,7 +60,7 @@ class UpDownloadLogModel extends Base
 
     public function downloadLog($user, $task,$file)
     {
-        $content = date('Y-m-d H:i:s').'-'.$user['username'].'-'.$file['name'].'-'.$task['id'].'-'.$task['title'];
+        $content = date('Y-m-d H:i:s').'%-%'.$user['username'].'-'.$file['name'].'%-%'.$task['id'].'%-%'.$task['title'];
         $dir = 'data/log';
         if(!file_exists($dir)){
             mkdir ($dir,0777,true);
