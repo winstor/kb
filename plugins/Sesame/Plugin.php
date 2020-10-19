@@ -1,6 +1,6 @@
 <?php
 
-namespace Kanboard\Plugin\MyCustom;
+namespace Kanboard\Plugin\Sesame;
 
 
 use Kanboard\Core\Plugin\Base;
@@ -12,6 +12,6 @@ class Plugin extends Base
 {
 	public function initialize()
 	{
-        $this->hook->on('template:layout:js', array('template' => 'plugins/MyCustom/Assets/js/jump_theme.js'));
+        $this->hook->on('template:layout:js', array('template' => 'plugins/Sesame/Assets/js/jump_theme.js'));
 	}
 }
