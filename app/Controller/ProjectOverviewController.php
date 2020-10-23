@@ -25,7 +25,7 @@ class ProjectOverviewController extends BaseController
             'description' => $this->helper->projectHeader->getDescription($project),
             'users'       => $this->projectUserRoleModel->getAllUsersGroupedByRole($project['id']),
             'roles'       => $this->projectRoleModel->getList($project['id']),
-            'events'      => $this->helper->projectActivity->getProjectEvents($project['id'], 10),
+            'events'      => $this->helper->projectActivity->getProjectEvents($project['id'], 100),
             'images'      => $this->projectFileModel->getAllImages($project['id']),
             'files'       => $this->projectFileModel->getAllDocuments($project['id']),
         )));
