@@ -221,7 +221,8 @@ class Response extends Base
         foreach ($this->httpHeaders as $header => $value) {
             header($header.': '.$value);
         }
-
+        ob_clean();
+        flush();
         if (! empty($this->httpBody)) {
             echo $this->httpBody;
         }
