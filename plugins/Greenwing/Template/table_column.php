@@ -21,6 +21,9 @@
 
             <span class="board-column-title">
                 <?= $this->text->e($column['title']) ?>
+                <?php if (! empty($column['description'])): ?>
+                    <?= $this->app->tooltipMarkdown($column['description']) ?>
+                <?php endif ?>
             </span>
             
             <?php if ($column['nb_tasks'] > 0): ?>
