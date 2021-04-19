@@ -10,7 +10,16 @@
             <div class="input-addon-item">
                 <?= $this->render('app/filters_helper', array('reset' => 'status:open', 'project' => $project)) ?>
             </div>
-
+		        <div class="input-addon-item">
+				        <div class="dropdown">
+						        <a style="color: #304b6f;align-items: center;height: 100%;padding: 0 10px;display: flex;" class="dropdown-menu-link-icon" href="<?= $this->url->href('BoardViewController', 'show', array('plugin'=>'','project_id' => $project['id'],'search'=>'status:open')) ?>"><i class="fa fa-fw fa-refresh"></i></a>
+				        </div>
+		        </div>
+		        <div class="input-addon-item">
+				        <div class="dropdown">
+						        <a style="color: #304b6f;align-items: center;height: 100%;padding: 0 10px;display: flex;" class="dropdown-menu-link-icon" href="<?= $this->url->href('BoardViewController', 'show', array('plugin'=>'','project_id' => $project['id'],'search'=>'status:open assignee:me')) ?>">自己</a>
+				        </div>
+		        </div>
             <?php if (isset($custom_filters_list) && ! empty($custom_filters_list)): ?>
             <div class="input-addon-item">
                 <div class="dropdown">
