@@ -56,9 +56,11 @@
                         <a  title="添加评论" href="/?controller=CommentListController&action=show&task_id=<?= $task['id'] ?>&project_id=<?= $task['project_id'] ?>" class="js-modal-large">
                             <i class="fa fa-commenting-o fa-fw js-modal-large" aria-hidden="true"></i>
                         </a>
+                        <?php if ($this->projectRole->canUpdateTaskFile($task)): ?>
                         <a  title="附加文档" href="/?controller=TaskFileController&action=create&task_id=<?= $task['id'] ?>&project_id=<?= $task['project_id'] ?>" class="js-modal-large">
                             <i class="fa fa-upload fa-fw js-modal-large" aria-hidden="true"></i>
                         </a>
+                        <?php endif ?>
                         <a  title="复制到另一项目" href="/?controller=TaskDuplicationController&action=copy&task_id=<?= $task['id'] ?>&project_id=<?= $task['project_id'] ?>" class="js-modal-large">
                             <i class="fa fa-share-square-o fa-fw js-modal-large" aria-hidden="true"></i>
                         </a>

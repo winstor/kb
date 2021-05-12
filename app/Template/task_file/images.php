@@ -1,6 +1,9 @@
 <?php if (! empty($images)): ?>
     <div class="file-thumbnails">
         <?php foreach ($images as $file): ?>
+            <?php if (!$this->projectRole->canUpdateTaskFile($task, $file['user_id'])): ?>
+                <?php continue; ?>
+            <?php endif ?>
             <div class="file-thumbnail">
                 <?= $this->app->component('image-slideshow', array(
                     'images' => $images,

@@ -49,9 +49,11 @@
         <li>
             <?= $this->modal->small('comment-o', t('Add a comment'), 'CommentController', 'create', array('task_id' => $task['id'], 'project_id' => $task['project_id'])) ?>
         </li>
+        <?php if ($this->projectRole->canUpdateTaskFile($task)): ?>
         <li>
             <?= $this->modal->medium('file', t('Attach a document'), 'TaskFileController', 'create', array('task_id' => $task['id'], 'project_id' => $task['project_id'])) ?>
         </li>
+        <?php endif ?>
         <li>
             <?= $this->modal->medium('camera', t('Add a screenshot'), 'TaskFileController', 'screenshot', array('task_id' => $task['id'], 'project_id' => $task['project_id'])) ?>
         </li>

@@ -120,7 +120,7 @@ class ProjectRoleHelper extends Base
         $role = $this->getProjectUserRole($projectId);
 
         if ($this->role->isCustomProjectRole($role)) {
-            if (! $this->isAllowedToCreateTask($projectId, $columnId, $role)) {
+            if (!$this->isAllowedToCreateTask($projectId, $columnId, $role)) {
                 return false;
             }
         }
@@ -140,7 +140,7 @@ class ProjectRoleHelper extends Base
         $role = $this->getProjectUserRole($projectId);
 
         if ($this->role->isCustomProjectRole($role)) {
-            if (! $this->isAllowedToChangeTaskStatus($projectId, $columnId, $role)) {
+            if (!$this->isAllowedToChangeTaskStatus($projectId, $columnId, $role)) {
                 return false;
             }
         }
@@ -215,14 +215,14 @@ class ProjectRoleHelper extends Base
     /**
      * Check project access
      *
-     * @param  string  $controller
-     * @param  string  $action
+     * @param  string $controller
+     * @param  string $action
      * @param  integer $projectId
      * @return bool
      */
     public function checkProjectAccess($controller, $action, $projectId)
     {
-        if (! $this->userSession->isLogged()) {
+        if (!$this->userSession->isLogged()) {
             return false;
         }
 
@@ -230,7 +230,7 @@ class ProjectRoleHelper extends Base
             return true;
         }
 
-        if (! $this->helper->user->hasAccess($controller, $action)) {
+        if (!$this->helper->user->hasAccess($controller, $action)) {
             return false;
         }
 
@@ -248,8 +248,8 @@ class ProjectRoleHelper extends Base
     /**
      * Check authorization for a custom project role to change the task status
      *
-     * @param  int    $projectId
-     * @param  int    $columnId
+     * @param  int $projectId
+     * @param  int $columnId
      * @param  string $role
      * @return bool
      */
@@ -267,14 +267,14 @@ class ProjectRoleHelper extends Base
             }
         }
 
-        return ! $this->hasRestriction($projectId, $role, ProjectRoleRestrictionModel::RULE_TASK_OPEN_CLOSE);
+        return !$this->hasRestriction($projectId, $role, ProjectRoleRestrictionModel::RULE_TASK_OPEN_CLOSE);
     }
 
     /**
      * Check authorization for a custom project role to create a task
      *
-     * @param  int    $projectId
-     * @param  int    $columnId
+     * @param  int $projectId
+     * @param  int $columnId
      * @param  string $role
      * @return bool
      */
@@ -292,14 +292,14 @@ class ProjectRoleHelper extends Base
             }
         }
 
-        return ! $this->hasRestriction($projectId, $role, ProjectRoleRestrictionModel::RULE_TASK_CREATION);
+        return !$this->hasRestriction($projectId, $role, ProjectRoleRestrictionModel::RULE_TASK_CREATION);
     }
 
     /**
      * Check if the role can move task in the given project
      *
-     * @param  int     $projectId
-     * @param  string  $role
+     * @param  int $projectId
+     * @param  string $role
      * @return bool
      */
     protected function isAllowedToMoveTask($projectId, $role)
@@ -319,8 +319,8 @@ class ProjectRoleHelper extends Base
      * Check if given role has a restriction
      *
      * @param  integer $projectId
-     * @param  string  $role
-     * @param  string  $rule
+     * @param  string $role
+     * @param  string $rule
      * @return bool
      */
     protected function hasRestriction($projectId, $role, $rule)
@@ -334,5 +334,33 @@ class ProjectRoleHelper extends Base
         }
 
         return false;
+    }
+
+    /**
+     * Return true if the user can update a task
+     *
+     * @public
+     * @param  array $task
+     * @return bool
+     */
+    public function canUpdateTaskFile(array $task, $user_id = 0)
+    {
+        $role = $this->getProjectUserRole($task['project_id']);
+        //负责人或非自定义角色有所有权限
+        if ($task['owner_id'] == $this->userSession->getId() || !$this->role->isCustomProjectRole($role)) {
+            return true;
+        }
+        //角色权限判断
+        if (!$user_id || $user_id != $this->userSession->getId()) {
+            //只允许负责人更新
+            if ($this->hasRestriction($task['project_id'], $role, ProjectRoleRestrictionModel::RULE_TASK_UPDATE_FILE)) {
+                return false;
+            }
+            //只允许自己
+            if ($this->hasRestriction($task['project_id'], $role, ProjectRoleRestrictionModel::RULE_TASK_UPDATE_ASSIGNED)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

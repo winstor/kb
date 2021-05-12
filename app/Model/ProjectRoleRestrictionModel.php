@@ -20,6 +20,7 @@ class ProjectRoleRestrictionModel extends Base
     const RULE_TASK_MOVE = 'task_move';
     const RULE_TASK_CHANGE_ASSIGNEE = 'task_change_assignee';
     const RULE_TASK_UPDATE_ASSIGNED = 'task_update_assigned';
+    const RULE_TASK_UPDATE_FILE = 'task_update_file';
 
     /**
      * Get rules
@@ -29,12 +30,13 @@ class ProjectRoleRestrictionModel extends Base
     public function getRules()
     {
         return array(
-            self::RULE_TASK_CREATION        => t('Task creation is not permitted'),
-            self::RULE_TASK_SUPPRESSION     => t('Task suppression is not permitted'),
-            self::RULE_TASK_OPEN_CLOSE      => t('Closing or opening a task is not permitted'),
-            self::RULE_TASK_MOVE            => t('Moving a task is not permitted'),
+            self::RULE_TASK_CREATION => t('Task creation is not permitted'),
+            self::RULE_TASK_SUPPRESSION => t('Task suppression is not permitted'),
+            self::RULE_TASK_OPEN_CLOSE => t('Closing or opening a task is not permitted'),
+            self::RULE_TASK_MOVE => t('Moving a task is not permitted'),
             self::RULE_TASK_CHANGE_ASSIGNEE => t('Changing assignee is not permitted'),
             self::RULE_TASK_UPDATE_ASSIGNED => t('Update only assigned tasks is permitted'),
+            self::RULE_TASK_UPDATE_FILE => t('仅允许负责人操作附件(其他人只能下载自己附件)'),
         );
     }
 
@@ -57,7 +59,7 @@ class ProjectRoleRestrictionModel extends Base
     /**
      * Get restrictions
      *
-     * @param  int    $project_id
+     * @param  int $project_id
      * @return array
      */
     public function getAll($project_id)
@@ -66,12 +68,12 @@ class ProjectRoleRestrictionModel extends Base
         $restrictions = $this->db
             ->table(self::TABLE)
             ->columns(
-                self::TABLE.'.restriction_id',
-                self::TABLE.'.project_id',
-                self::TABLE.'.role_id',
-                self::TABLE.'.rule'
+                self::TABLE . '.restriction_id',
+                self::TABLE . '.project_id',
+                self::TABLE . '.role_id',
+                self::TABLE . '.rule'
             )
-            ->eq(self::TABLE.'.project_id', $project_id)
+            ->eq(self::TABLE . '.project_id', $project_id)
             ->findAll();
 
         foreach ($restrictions as &$restriction) {
@@ -84,7 +86,7 @@ class ProjectRoleRestrictionModel extends Base
     /**
      * Get restrictions
      *
-     * @param  int    $project_id
+     * @param  int $project_id
      * @param  string $role
      * @return array
      */
@@ -93,13 +95,13 @@ class ProjectRoleRestrictionModel extends Base
         return $this->db
             ->table(self::TABLE)
             ->columns(
-                self::TABLE.'.restriction_id',
-                self::TABLE.'.project_id',
-                self::TABLE.'.role_id',
-                self::TABLE.'.rule',
+                self::TABLE . '.restriction_id',
+                self::TABLE . '.project_id',
+                self::TABLE . '.role_id',
+                self::TABLE . '.rule',
                 'pr.role'
             )
-            ->eq(self::TABLE.'.project_id', $project_id)
+            ->eq(self::TABLE . '.project_id', $project_id)
             ->eq('role', $role)
             ->left(ProjectRoleModel::TABLE, 'pr', 'role_id', self::TABLE, 'role_id')
             ->findAll();
@@ -135,7 +137,7 @@ class ProjectRoleRestrictionModel extends Base
     }
 
     /**
-     * Copy role restriction models from a custome_role in the src project to the dst custom_role of the dst project 
+     * Copy role restriction models from a custome_role in the src project to the dst custom_role of the dst project
      *
      * @param  integer $project_src_id
      * @param  integer $project_dst_id
@@ -156,12 +158,12 @@ class ProjectRoleRestrictionModel extends Base
                 'role_id' => $role_dst_id,
                 'rule' => $row['rule'],
             ));
-            
-            if (! $result) {
+
+            if (!$result) {
                 return false;
             }
         }
-            
+
         return true;
     }
 }

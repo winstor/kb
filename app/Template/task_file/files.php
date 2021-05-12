@@ -7,6 +7,9 @@
             <th class="column-10"><?= t('Date') ?></th>
         </tr>
         <?php foreach ($files as $file): ?>
+            <?php if (!$this->projectRole->canUpdateTaskFile($task, $file['user_id'])): ?>
+                <?php continue; ?>
+            <?php endif ?>
             <tr>
                 <td>
                     <i class="fa <?= $this->file->icon($file['name']) ?> fa-fw"></i>
