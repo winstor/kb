@@ -29,7 +29,7 @@ class GroupAssignTaskModificationController extends BaseController
         $task = $this->getTask();
         $values = ['id' => $task['id'], 'owner_id' => $this->userSession->getId()];
 
-        if (! $this->helper->projectRole->canUpdateTask($task)) {
+        if (!$this->helper->projectRole->canUpdateTask($task)) {
             throw new AccessForbiddenException(t('You are not allowed to update tasks assigned to someone else.'));
         }
 
@@ -47,7 +47,7 @@ class GroupAssignTaskModificationController extends BaseController
         $task = $this->getTask();
         $values = ['id' => $task['id'], 'date_started' => time()];
 
-        if (! $this->helper->projectRole->canUpdateTask($task)) {
+        if (!$this->helper->projectRole->canUpdateTask($task)) {
             throw new AccessForbiddenException(t('You are not allowed to update tasks assigned to someone else.'));
         }
 
@@ -65,7 +65,7 @@ class GroupAssignTaskModificationController extends BaseController
                 $this->response->redirect($this->helper->url->to('TaskListController', 'show', ['project_id' => $task['project_id']]));
                 break;
             case 'dashboard':
-                $this->response->redirect($this->helper->url->to('DashboardController', 'show', [], 'project-tasks-'.$task['project_id']));
+                $this->response->redirect($this->helper->url->to('DashboardController', 'show', [], 'project-tasks-' . $task['project_id']));
                 break;
             case 'dashboard-tasks':
                 $this->response->redirect($this->helper->url->to('DashboardController', 'tasks', ['user_id' => $this->userSession->getId()]));
@@ -88,7 +88,7 @@ class GroupAssignTaskModificationController extends BaseController
     {
         $task = $this->getTask();
 
-        if (! $this->helper->projectRole->canUpdateTask($task)) {
+        if (!$this->helper->projectRole->canUpdateTask($task)) {
             throw new AccessForbiddenException(t('You are not allowed to update tasks assigned to someone else.'));
         }
 
@@ -146,24 +146,33 @@ class GroupAssignTaskModificationController extends BaseController
         $values = $this->request->getValues();
         $values['id'] = $task['id'];
         $values['project_id'] = $task['project_id'];
+        if ($task['owner_ms']) {
+            $values['is_owner_member'] = $this->multiselectMemberModel->isMember($task['owner_ms'], $this->userSession->getId());
+        }
         if (isset($values['owner_ms']) && !empty($values['owner_ms'])) {
-          if (!empty($task['owner_ms'])) { 
-              $ms_id = $task['owner_ms']; 
-              $previousMembers = $this->multiselectMemberModel->getMembers($ms_id); 
-              $this->multiselectMemberModel->removeAllUsers($ms_id); 
-          } else { 
-              $ms_id = $this->multiselectModel->create(); 
-          }
-          foreach ($values['owner_ms'] as $user) {
-            if ($user !== 0) { $this->multiselectMemberModel->addUser($ms_id, $user); }
-          }
-          unset($values['owner_ms']);
-          $values['owner_ms'] = $ms_id;
+            if (!empty($task['owner_ms'])) {
+                $ms_id = $task['owner_ms'];
+                $previousMembers = $this->multiselectMemberModel->getMembers($ms_id);
+                $this->multiselectMemberModel->removeAllUsers($ms_id);
+            } else {
+                $ms_id = $this->multiselectModel->create();
+            }
+            foreach ($values['owner_ms'] as $user) {
+                if ($user !== 0) {
+                    $this->multiselectMemberModel->addUser($ms_id, $user);
+                }
+            }
+            unset($values['owner_ms']);
+            $values['owner_ms'] = $ms_id;
 
-          $newMembersSet = $this->multiselectMemberModel->getMembers($values['owner_ms']); 
-          if (sort($previousMembers) !== sort($newMembersSet)) { $this->multiselectMemberModel->assigneeChanged($task, $values); }
+            $newMembersSet = $this->multiselectMemberModel->getMembers($values['owner_ms']);
+            if (sort($previousMembers) !== sort($newMembersSet)) {
+                $this->multiselectMemberModel->assigneeChanged($task, $values);
+            }
 
-          if ($values['owner_gp'] !== $task['owner_gp']) { $this->multiselectMemberModel->assigneeChanged($task, $values); }
+            if ($values['owner_gp'] !== $task['owner_gp']) {
+                $this->multiselectMemberModel->assigneeChanged($task, $values);
+            }
         } else {
             $this->multiselectMemberModel->removeAllUsers($task['owner_ms']);
         }
@@ -184,14 +193,16 @@ class GroupAssignTaskModificationController extends BaseController
         if (isset($values['owner_id']) && $values['owner_id'] != $task['owner_id'] && !$this->helper->projectRole->canChangeAssignee($task)) {
             throw new AccessForbiddenException(t('You are not allowed to change the assignee.'));
         }
-
-        if (! $this->helper->projectRole->canUpdateTask($task)) {
-            throw new AccessForbiddenException(t('You are not allowed to update tasks assigned to someone else.'));
+        if (empty($values['is_owner_member'])) {
+            if (!$this->helper->projectRole->canUpdateTask($task)) {
+                throw new AccessForbiddenException(t('You are not allowed to update tasks assigned to someone else.'));
+            }
         }
+        unset($values['is_owner_member']);
 
         $result = $this->taskModificationModel->update($values);
 
-        if ($result && ! empty($task['external_uri'])) {
+        if ($result && !empty($task['external_uri'])) {
             try {
                 $taskProvider = $this->externalTaskManager->getProvider($task['external_provider']);
                 $result = $taskProvider->save($task['external_uri'], $values, $errors);

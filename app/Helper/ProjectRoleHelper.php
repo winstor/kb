@@ -206,6 +206,9 @@ class ProjectRoleHelper extends Base
         $role = $this->getProjectUserRole($task['project_id']);
 
         if ($this->role->isCustomProjectRole($role) && $task['owner_id'] != $this->userSession->getId() && $this->hasRestriction($task['project_id'], $role, ProjectRoleRestrictionModel::RULE_TASK_UPDATE_ASSIGNED)) {
+            if($this->multiselectMemberModel->isMember($task['owner_ms'],$this->userSession->getId())){
+                return true;
+            }
             return false;
         }
 
@@ -353,6 +356,9 @@ class ProjectRoleHelper extends Base
         //角色权限判断
         if (!$user_id || $user_id != $this->userSession->getId()) {
             //只允许负责人更新
+            if($this->multiselectMemberModel->isMember($task['owner_ms'],$this->userSession->getId())){
+                return true;
+            }
             if ($this->hasRestriction($task['project_id'], $role, ProjectRoleRestrictionModel::RULE_TASK_UPDATE_FILE)) {
                 return false;
             }
